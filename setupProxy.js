@@ -3,8 +3,11 @@ module.exports = function (app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'http://localhost:5000',
+      target: 'https://m.maizuo.com',
       changeOrigin: true,
+      pathRewrite: {
+        '^/api': '',
+      },
     })
   );
 };

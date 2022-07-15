@@ -38,6 +38,7 @@
     ]
   },
   "devDependencies": {
-    "http-proxy-middleware": "^2.0.3"
+    "http-proxy-middleware": "^2.0.3",
+    "react-router-dom": "^5.3.3"
   }
 }

@@ -1,7 +1,12 @@
-.desc {
-  color: red;
+.parent-container {
+  .desc {
+    color: red;
 
-  span {
-    color: gold;
+    .gg {
+      color: green;
+    }
+  }
+  .desc3 {
+    background: pink;
   }
 }
