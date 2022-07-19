@@ -1,5 +1,5 @@
-import {  useEffect } from 'react'
-import axios from 'axios'
+// import {  useEffect } from 'react'
+// import axios from 'axios'
 import IndexRouter from './router/index';
 // = 在引入css的时候，保证最外层盒子的className不一样就行，里面的是可以一样的，这样的父与子相同的class 就不会互相影响了
 import './app.scss'
