@@ -96,7 +96,7 @@ function SideMenu(props) {
     // ]
     return TreeDataSource(menu)
   }
-  console.log(props);
+  // console.log(props); //~ 通过withRouter包装的组件,props中有history,location,match
   const selectMenu = props.location.pathname
   const openKeys =  props.location.pathname.split('/')[1]
   return (
