@@ -10,11 +10,11 @@
       "roleId": 1
     },
     {
-      "username": "铁锤",
+      "username": "铁锤111123",
       "password": "123",
       "roleState": true,
       "default": false,
-      "region": "亚洲",
+      "region": "欧洲",
       "roleId": 2,
       "id": 2
     },
@@ -48,7 +48,7 @@
     {
       "username": "轩辕翠花",
       "password": "123",
-      "roleState": true,
+      "roleState": false,
       "default": false,
       "region": "南极洲",
       "roleId": 3,

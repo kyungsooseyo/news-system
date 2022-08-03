@@ -10,7 +10,11 @@ export default function UserList() {
   const [isAddVisible, setIsAddVisible] = useState(false)
   const [roleList, setRoleList] = useState([])
   const [regionList, setRegionList] = useState([])
+  const [isUpdateVisible, setIsUpdateVisible] = useState(false)
+  const [isUpdateDisabled, setIsUpdateDisabled] = useState(false)
+  const [current, setCurrent] = useState(null)
   const addForm = useRef(null)
+  const updateForm = useRef(null)
   useEffect(() => {
     getData()
     getRolesList()
@@ -21,6 +25,11 @@ export default function UserList() {
     {
       title: '区域',
       dataIndex: 'region',
+      filters: [...regionList.map(item => ({ text: item.title, value: item.value })), {
+        text: '全球',
+        value: ''
+      }],
+      onFilter: (value, record) => record.region === value,
       render: (region) => {
         return <b>{region === '' ? '全球' : region}</b>
       }
@@ -41,7 +50,7 @@ export default function UserList() {
       title: '用户状态',
       dataIndex: 'roleState',
       render: (_, item) => {
-        return <Switch checked={item.roleState} disabled={item.default}></Switch>
+        return <Switch checked={item.roleState} disabled={item.default} onChange={() => handleSwitchChange(item)}></Switch>
       }
     },
     {
@@ -82,6 +91,17 @@ export default function UserList() {
   //- 编辑
   const editClick = (item) => {
     // console.log('edit', item);
+    //! 加定时器,为了让其同步更新，仅仅是set完了，但是模态框还没有生成 里面的表单可能拿不到
+    setIsUpdateVisible(true)
+    setTimeout(() => {
+      if (item.roleId === 1) {
+        setIsUpdateDisabled(true)
+      } else {
+        setIsUpdateDisabled(false)
+      }
+      updateForm.current.setFieldsValue(item)
+    }, 0);
+    setCurrent(item)
   }
   const getData = () => {
     axios.get('http://localhost:11111/users?_expand=role').then(res => {
@@ -119,6 +139,26 @@ export default function UserList() {
       })
     }).catch(err => { console.log(err) })
   }
+  //, 点击更新
+  const updateFormOk = () => {
+    setIsUpdateVisible(false)
+    setIsUpdateDisabled(!isUpdateDisabled)
+    updateForm.current.validateFields().then(values => {
+      axios.patch(`http://localhost:11111/users/${current.id}`, values).then(res => {
+        console.log(res.data);
+        getData()
+      })
+    }).catch(err => { console.log(err) })
+  }
+  //, SwitchChange
+  const handleSwitchChange = (item) => {
+    console.log('iii', item);
+    axios.patch(`http://localhost:11111/users/${item.id}`, {
+      'roleState': !item.roleState
+    }).then(res => {
+      getData()
+    })
+  }
   return (
     <div>
       <div className="button-wrapper" style={{ 'marginBottom': '20px' }}>
@@ -140,6 +180,16 @@ export default function UserList() {
         onOk={() => addFormOk()}
       >
         <UserForm regionList={regionList} roleList={roleList} ref={addForm}></UserForm>
+      </Modal>
+      <Modal
+        visible={isUpdateVisible}
+        title="更新用户"
+        okText="更新"
+        cancelText="取消"
+        onCancel={() => { setIsUpdateVisible(false); setIsUpdateDisabled(!isUpdateDisabled) }}
+        onOk={() => updateFormOk()}
+      >
+        <UserForm regionList={regionList} roleList={roleList} ref={updateForm} isUpdateDisabled={isUpdateDisabled}></UserForm>
       </Modal>
     </div>
   )

@@ -1,9 +1,14 @@
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef, useEffect, useState } from 'react'
 import { Form, Select, Input } from 'antd'
 const { Option } = Select
 // ~ 通过forwardRef将组件转换为ref调用 起到了透传的作用
 const UserForm = forwardRef((props, ref) => {
   const [isDisabled, setDisabled] = useState(false)
+  //` 有点类似watch的作用 监听父组件传递过来的值得变化
+  useEffect(() => {
+    setDisabled(props.isUpdateDisabled)
+  }, [props.isUpdateDisabled])
+
   const roleChange = (value, ref) => {
     if (value === 1) {
       setDisabled(true)
