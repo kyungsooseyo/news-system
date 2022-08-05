@@ -1,11 +1,18 @@
 import React, { useState } from 'react'
 import { Layout, Dropdown, Menu, Space, Avatar } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined, SmileOutlined, DownOutlined, UserOutlined } from '@ant-design/icons';
-export default function TopHeader() {
+import { withRouter } from 'react-router-dom';
+function TopHeader(props) {
   const { Header } = Layout
   const [collapsed, setCollapsed] = useState(false)
   const changeCollapsed = () => {
     setCollapsed(!collapsed)
+  }
+  //, 退出登录
+  const logout = () => {
+    console.log('logout');
+    localStorage.removeItem('token');
+    props.history.replace('/login')
   }
   const menu = (
     <Menu
@@ -13,9 +20,7 @@ export default function TopHeader() {
         {
           key: '1',
           label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-              1st menu item
-            </a>
+            <p onClick={() => { logout() }}>退出登录</p>
           ),
         },
         {
@@ -57,3 +62,4 @@ export default function TopHeader() {
     </Header>
   )
 }
+export default withRouter(TopHeader)
