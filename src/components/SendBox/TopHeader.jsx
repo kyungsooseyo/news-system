@@ -8,6 +8,7 @@ function TopHeader(props) {
   const changeCollapsed = () => {
     setCollapsed(!collapsed)
   }
+  const { role: { roleName }, username } = JSON.parse(localStorage.getItem('token'))
   //, 退出登录
   const logout = () => {
     console.log('logout');
@@ -16,23 +17,22 @@ function TopHeader(props) {
   }
   const menu = (
     <Menu
+    // ! items中的key要不一样，否则hover的时候都会有背景色
       items={[
         {
           key: '1',
           label: (
-            <p onClick={() => { logout() }}>退出登录</p>
+            <p style={{ 'color': 'skyblue' }}>{roleName}</p>
           ),
         },
         {
           key: '2',
           label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-              2nd menu item (disabled)
-            </a>
+            <span onClick={() => { logout() }}>退出登录</span>
           ),
-          icon: <SmileOutlined />,
-          disabled: true,
+          danger: true,
         },
+
       ]}
     />
   );
@@ -51,7 +51,7 @@ function TopHeader(props) {
         collapsed ? <MenuUnfoldOutlined onClick={changeCollapsed} /> : <MenuFoldOutlined onClick={changeCollapsed} />
       }
       <div>
-        <span className='desc'>欢迎回来</span>
+        <span className='desc'>欢迎{username}回来</span>
         <Dropdown overlay={menu}>
           <Space>
             <Avatar size={25} icon={<UserOutlined />} />

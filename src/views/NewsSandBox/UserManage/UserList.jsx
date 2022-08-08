@@ -15,6 +15,12 @@ export default function UserList() {
   const [current, setCurrent] = useState(null)
   const addForm = useRef(null)
   const updateForm = useRef(null)
+  const { roleId, region, username } = JSON.parse(localStorage.getItem('token'))
+  const roleObj = {
+    1: 'superadmin',
+    2: 'admin',
+    3: 'editor'
+  }
   useEffect(() => {
     getData()
     getRolesList()
@@ -106,7 +112,7 @@ export default function UserList() {
   const getData = () => {
     axios.get('http://localhost:11111/users?_expand=role').then(res => {
       const list = res.data
-      setDataSource(list)
+      setDataSource(roleObj[roleId] === 'superadmin' ? list : [...list.filter(item => item.region === region && roleObj[item.roleId] === 'editor'), ...list.filter(item => item.username === username)])
     })
   }
   const getRegionList = () => {

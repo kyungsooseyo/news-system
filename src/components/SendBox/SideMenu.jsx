@@ -12,6 +12,11 @@ function SideMenu(props) {
   useEffect(() => {
     axios.get('http://localhost:11111/rights?_embed=children').then(res => {
       console.log('sideMenu', res.data)
+      // res.data = res.data.forEach(item => {
+      //   if (item.title === '首页') {
+      //     item.children = [{ id: 111, title: '首页1212', rightId: 2, key: '/home', grade: 2, pagepermisson: 1 }]
+      //   }
+      // })
       setMenu(res.data)
     })
     return () => {
@@ -24,12 +29,13 @@ function SideMenu(props) {
     '/news-manage': <QqOutlined />,
     '/audit-manage': <TableOutlined />,
   }
+  const { role: { rights } } = JSON.parse(localStorage.getItem('token'))
   const TreeDataSource = (arr) => {
     if (!Array.isArray(arr)) {
       return;
     }
     //` 不需要完全复制,只需要一些关键key label 就行
-    return arr.filter(item => item?.pagepermisson === 1).map((v, i) => {
+    return arr.filter(item => item?.pagepermisson === 1 && rights?.includes(item?.key)).map((v, i) => {
       if (v.children) {
         return {
           // ...v,
@@ -98,7 +104,7 @@ function SideMenu(props) {
   }
   // console.log(props); //~ 通过withRouter包装的组件,props中有history,location,match
   const selectMenu = props.location.pathname
-  const openKeys =  props.location.pathname.split('/')[1]
+  const openKeys = props.location.pathname.split('/')[1]
   return (
     <Sider trigger={null} collapsible collapsed={collapsed} className='side-menu-container'>
 
