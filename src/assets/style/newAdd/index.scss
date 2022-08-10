@@ -1,0 +1,13 @@
+.new-add-container {
+  .news-content {
+    .hidden {
+      display: none;
+    }
+  }
+  .btn-container {
+    margin-top: 15px;
+    .ant-btn {
+      margin: 0 10px;
+    }
+  }
+}
