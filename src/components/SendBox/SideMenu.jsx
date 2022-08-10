@@ -35,8 +35,9 @@ function SideMenu(props) {
       return;
     }
     //` 不需要完全复制,只需要一些关键key label 就行
-    return arr.filter(item => item?.pagepermisson === 1 && rights?.includes(item?.key)).map((v, i) => {
-      if (v.children) {
+    return arr.filter(item => item?.pagepermisson === 1 && !!rights?.checked ? rights?.checked?.includes(item?.key) : rights?.includes(item?.key)).map((v, i) => {
+      //+ 如果有children 并且children的length为0 那么在渲染菜单的时候是没法点击进行路由跳转的 所以不能用v.children这么判断;因为v.children 会被当为true
+      if (v.children?.length > 0) {
         return {
           // ...v,
           id: v.id,
