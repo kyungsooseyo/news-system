@@ -19,6 +19,21 @@ const UserForm = forwardRef((props, ref) => {
       setDisabled(false)
     }
   }
+  const { roleId } = JSON.parse(localStorage.getItem('token'))
+  const roleObj = {
+    1: 'superadmin',
+    2: 'admin',
+    3: 'editor'
+  }
+  const checkRegionDisabled = () => {
+    if (props.isUpdate) {
+      if (roleObj[roleId]  === 'superadmin') {
+        return false
+      }else{
+        return true
+      }
+    } else { }
+  }
   return (
     <Form
       layout="vertical"

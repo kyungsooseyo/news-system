@@ -192,10 +192,11 @@ export default function UserList() {
         title="更新用户"
         okText="更新"
         cancelText="取消"
+
         onCancel={() => { setIsUpdateVisible(false); setIsUpdateDisabled(!isUpdateDisabled) }}
         onOk={() => updateFormOk()}
       >
-        <UserForm regionList={regionList} roleList={roleList} ref={updateForm} isUpdateDisabled={isUpdateDisabled}></UserForm>
+        <UserForm regionList={regionList} roleList={roleList} ref={updateForm} isUpdateDisabled={isUpdateDisabled} isUpdate={true}></UserForm>
       </Modal>
     </div>
   )

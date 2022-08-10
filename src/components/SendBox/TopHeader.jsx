@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Layout, Dropdown, Menu, Space, Avatar } from 'antd';
-import { MenuUnfoldOutlined, MenuFoldOutlined, SmileOutlined, DownOutlined, UserOutlined } from '@ant-design/icons';
+import { MenuUnfoldOutlined, MenuFoldOutlined,  DownOutlined, UserOutlined } from '@ant-design/icons';
 import { withRouter } from 'react-router-dom';
 function TopHeader(props) {
   const { Header } = Layout
