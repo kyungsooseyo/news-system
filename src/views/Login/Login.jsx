@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Input, Button, message } from "antd";
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import Particles from 'react-tsparticles';
+// import Particles from 'react-tsparticles';
 import { withRouter } from 'react-router-dom';
 import './login.scss'
 import axios from 'axios';
@@ -21,7 +21,7 @@ function Login(props) {
   return (
 
     <div className='login-wrapper'>
-      <Particles height={document.documentElement.clientHeight} />
+      {/* <Particles height={document.documentElement.clientHeight} /> */}
       <div className="form-wrapper">
 
         <p className='login-title'>全球新闻发布系统</p>
