@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Button, PageHeader, Steps, Form, Input, Select } from 'antd'
+import { Button, PageHeader, Steps, Form, Input, Select, message, notification } from 'antd'
 import '../../../assets/style/newAdd/index.scss'
 import axios from 'axios';
 import NewsEditor from '../../../components/NewsManage/NewsEditor';
+import { withRouter } from 'react-router-dom';
 const { Step } = Steps
 const { Option } = Select
-export default function NewsAdd() {
+function NewsAdd(props) {
   useEffect(() => {
     axios.get('http://localhost:11111/categories').then(res => {
       console.log('categories', res.data);
@@ -15,22 +16,54 @@ export default function NewsAdd() {
   const newsForm = useRef(null)
   const [current, setCurrent] = useState(0)
   const [categoryList, setCategoryList] = useState([])
+  const [formInfo, setFormInfo] = useState({})
+  const [content, setContent] = useState('')
+  const user = JSON.parse(localStorage.getItem('token'))
   //, 下一步
   const handleNext = () => {
     if (current === 0) {
       newsForm.current.validateFields().then(values => {
-        console.log('values', values)
+        // console.log('values', values)
+        setFormInfo(values)
         setCurrent(current + 1)
       }).catch(err => {
         console.log(err);
       })
     } else {
-      setCurrent(current + 1)
+      if (content === '' || content.trim() === '<p></p>') {
+        message.error('请输入内容!')
+      } else {
+        setCurrent(current + 1)
+      }
     }
   }
   //, 上一步
   const handlePrev = () => {
     setCurrent(current - 1)
+  }
+  //, 保存草稿箱
+  const saveDraftBox = (state) => {
+    // =0 草稿箱 1 待审核 2 审核通过 3 审核不通过
+    axios.post('http://localhost:11111/news', {
+      ...formInfo,
+      content,
+      region: user.region ? user.region : '全球',
+      author: user.username,
+      roleId: user.roleId,
+      auditState: state,
+      publishState: 0,
+      createTime: new Date().getTime(), // Date.now() 这俩都是获取当前时间的毫秒数,
+      star: 0,
+      view: 0,
+      //publishTime: 0
+    }).then(res => {
+      notification.success({
+        message: '保存成功',
+        description: `您可以到${state === 0 ? '草稿箱' : '审核列表'}中查看`,
+        placement: 'bottomRight'
+      })
+      state === 0 ? props.history.push('/news-manage/draft') : props.history.push('/audit-manage/audit')
+    })
   }
   return (
     <div className='new-add-container'>
@@ -76,15 +109,18 @@ export default function NewsAdd() {
         </div>
         <div className={current === 1 ? '' : 'hidden'}>
           {/* //+ 子给父级传递数据 提前留一个回调函数 让子通过prop.getContent() 把数据传递过来 这边进行接收 */}
-          <NewsEditor getContent={(value) => { console.log(value) }}></NewsEditor>
+          <NewsEditor getContent={(value) => { setContent(value) }}></NewsEditor>
         </div>
         <div className={current === 2 ? '' : 'hidden'}>
-          333
         </div>
       </div>
       <div className='btn-container'>
         {
-          current === 2 && <div style={{ 'display': 'inline-block' }}><Button type='primary'>保存草稿箱</Button><Button danger>提交审核</Button></div>
+          current === 2 &&
+          <div style={{ 'display': 'inline-block' }}>
+            <Button type='primary' onClick={() => saveDraftBox(0)}>保存草稿箱</Button>
+            <Button danger onClick={() => saveDraftBox(1)}>提交审核</Button>
+          </div>
         }
         {
           current < 2 && <Button type='primary' onClick={handleNext}>下一步</Button>
@@ -96,3 +132,4 @@ export default function NewsAdd() {
     </div>
   )
 }
+export default withRouter(NewsAdd)
