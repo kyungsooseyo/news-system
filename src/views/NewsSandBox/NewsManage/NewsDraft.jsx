@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Table, Button, Modal, } from 'antd'
 import { DeleteOutlined, EditOutlined, UploadOutlined } from '@ant-design/icons';
+import { NavLink } from 'react-router-dom'
 import axios from 'axios'
 const { confirm } = Modal
 export default function NewsDraft() {
@@ -15,7 +16,6 @@ export default function NewsDraft() {
     {
       title: 'ID',
       dataIndex: 'id',
-      key: 'id',
       render: (id) => {
         return <b>{id}</b>
       }
@@ -23,24 +23,23 @@ export default function NewsDraft() {
     {
       title: '新闻标题',
       dataIndex: 'title',
-      key: 'title',
+      render: (title, item) => {
+        return <NavLink to={`/news-manage/preview/${item.id}`}>{title}</NavLink>
+      }
     },
     {
       title: '作者',
       dataIndex: 'author',
-      key: 'author',
     },
     {
       title: '新闻分类',
       dataIndex: 'category',
-      key: 'category',
       render: (category) => category.title
     },
     {
       title: '操作',
       //! 要想传递把参数传递过去,就不要用dataIndex,或者写上dataIndex 那么第二个参数就是该行的数据
       dataIndex: 'operate',
-      key: 'operate',
       render: (_, item) => {
         return <div>
           <Button shape="circle" danger icon={<DeleteOutlined></DeleteOutlined>} onClick={() => handleConfirm(_, item)}></Button>

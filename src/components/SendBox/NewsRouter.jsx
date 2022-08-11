@@ -14,6 +14,7 @@ import Unpublished from '../../views/NewsSandBox/PublishManage/Unpublished'
 import Published from '../../views/NewsSandBox/PublishManage/Published'
 import Sunset from '../../views/NewsSandBox/PublishManage/Sunset'
 import axios from 'axios';
+import NewsPreview from '../../views/NewsSandBox/NewsManage/NewsPreview';
 export default function NewsRouter() {
   const [backRouterList, setBackRouterList] = useState([])
   useEffect(() => {
@@ -33,6 +34,7 @@ export default function NewsRouter() {
     '/right-manage/right/list': RightList,
     '/news-manage/add': NewsAdd,
     '/news-manage/draft': NewsDraft,
+    '/news-manage/preview/:id': NewsPreview,
     '/news-manage/category': NewsCategory,
     '/audit-manage/audit': Audit,
     '/audit-manage/list': AuditList,
@@ -43,7 +45,7 @@ export default function NewsRouter() {
   const { role: { rights } } = JSON.parse(localStorage.getItem('token'))
   const checkRoute = (item) => {
     // console.log(item);
-    return localRouterMap[item.key] && item.pagepermisson === 1
+    return localRouterMap[item.key] && (item.pagepermisson || item.routepermisson) === 1
   }
   const checkUserPermission = (item) => {
     // = 有时候会多了一层checked包裹 所以要多下判断
