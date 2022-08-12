@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Modal, } from 'antd'
+import { Table, Button, Modal, Tooltip, notification } from 'antd'
 import { DeleteOutlined, EditOutlined, UploadOutlined } from '@ant-design/icons';
-import { NavLink } from 'react-router-dom'
+import { NavLink, withRouter } from 'react-router-dom'
 import axios from 'axios'
 const { confirm } = Modal
-export default function NewsDraft() {
+function NewsDraft(props) {
   const { username } = JSON.parse(localStorage.getItem('token'))
   const [dataSource, setDataSource] = useState([])
   useEffect(() => {
@@ -43,14 +43,18 @@ export default function NewsDraft() {
       render: (_, item) => {
         return <div>
           <Button shape="circle" danger icon={<DeleteOutlined></DeleteOutlined>} onClick={() => handleConfirm(_, item)}></Button>
-          <Button type="primary" shape="circle" icon={<EditOutlined></EditOutlined>} onClick={() => editClick(item)} ></Button>
-          <Button type="primary" shape="circle" icon={<UploadOutlined></UploadOutlined>} onClick={() => editClick(item)} ></Button>
+          <Tooltip title='更新'>
+            <Button type="primary" shape="circle" icon={<EditOutlined></EditOutlined>} onClick={() => editClick(item)} ></Button>
+          </Tooltip>
+          <Tooltip title='审核'>
+            <Button type="primary" shape="circle" icon={<UploadOutlined></UploadOutlined>} onClick={() => handleCheck(item)} ></Button>
+          </Tooltip>
         </div>
       }
     },
   ];
   //====== 方法
-  //- 确认
+  //, 确认
   const handleConfirm = (_, item) => {
     confirm({
       title: '确认删除?',
@@ -69,9 +73,24 @@ export default function NewsDraft() {
       getData()
     })
   }
-  //- 编辑
+  //, 编辑
   const editClick = (item) => {
     // console.log('edit', item);
+    props.history.push(`/news-manage/update/${item.id}`)
+  }
+  //, 审核
+  const handleCheck = (item) => {
+    console.log('check', item);
+    axios.patch(`http://localhost:11111/news/${item.id}`, {
+      auditState: 1
+    }).then(res => {
+      notification.success({
+        message: '通知',
+        description: '您可以到审核列表查看审核结果',
+        placement: 'bottomRight'
+      })
+      props.history.push('/audit-manage/list')
+    })
   }
   const getData = () => {
     axios.get(`http://localhost:11111/news?author=${username}&auditState=0&_expand=category`).then(res => {
@@ -91,3 +110,4 @@ export default function NewsDraft() {
     </div>
   )
 }
+export default withRouter(NewsDraft)

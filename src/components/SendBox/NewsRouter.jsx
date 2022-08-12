@@ -15,6 +15,7 @@ import Published from '../../views/NewsSandBox/PublishManage/Published'
 import Sunset from '../../views/NewsSandBox/PublishManage/Sunset'
 import axios from 'axios';
 import NewsPreview from '../../views/NewsSandBox/NewsManage/NewsPreview';
+import NewsUpdate from '../../views/NewsSandBox/NewsManage/NewsUpdate';
 export default function NewsRouter() {
   const [backRouterList, setBackRouterList] = useState([])
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function NewsRouter() {
     '/news-manage/add': NewsAdd,
     '/news-manage/draft': NewsDraft,
     '/news-manage/preview/:id': NewsPreview,
+    '/news-manage/update/:id': NewsUpdate,
     '/news-manage/category': NewsCategory,
     '/audit-manage/audit': Audit,
     '/audit-manage/list': AuditList,
