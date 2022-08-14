@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Button, Table, Tag } from 'antd';
-import { NavLink } from 'react-router-dom'
-export default function AuditList() {
+import { Button, notification, Table, Tag } from 'antd';
+import { NavLink, withRouter } from 'react-router-dom'
+function AuditList(props) {
   const { username } = JSON.parse(localStorage.getItem('token'))
   const [dataSource, setDataSource] = useState([])
   const columns = [
@@ -38,13 +38,13 @@ export default function AuditList() {
       render: (_, item) => {
         return <div>
           {
-            item.auditState === 1 && <Button type="primary" danger>撤销</Button>
+            item.auditState === 1 && <Button type="primary" danger onClick={() => handleCancel(item)}>撤销</Button>
           }
           {
-            item.auditState === 2 && <Button type='primary'>发布</Button>
+            item.auditState === 2 && <Button type='primary' ghost onClick={() => handlePublish(item)}>发布</Button>
           }
           {
-            item.auditState === 3 && <Button type='primary'>更新</Button>
+            item.auditState === 3 && <Button type='primary' onClick={() => handleUpdate(item)}>更新</Button>
           }
         </div>
       }
@@ -59,9 +59,46 @@ export default function AuditList() {
         setDataSource(res.data)
       })
   }, [username])
+  // , 撤销
+  const handleCancel = (item) => {
+    axios.patch(`http://localhost:11111/news/${item.id}`, {
+      auditState: 0
+    })
+      .then(res1 => {
+        axios.get(`http://localhost:11111/news?author=${username}&auditState_ne=0&publishState_lte=1&_expand=category`)
+          .then(res => {
+            setDataSource(res.data)
+            notification.success({
+              message: '撤销成功',
+              description: '您可以到草稿箱里面查看',
+              placement: 'bottomRight'
+            })
+          }).catch(err => {
+            console.log(err);
+          })
+      })
+  }
+  // ,更新
+  const handleUpdate = (item) => {
+    props.history.push(`/news-manage/update/${item.id}`)
+  }
+  // ,发布
+  const handlePublish = (item) => {
+    axios.patch(`http://localhost:11111/news/${item.id}`, {
+      publishState: 2
+    }).then(res => {
+      props.history.push('/publish-manage/published')
+      notification.success({
+        message: '发布成功',
+        description: '您可以到发布管理里面查看',
+        placement: 'bottomRight'
+      })
+    })
+  }
   return (
     <div>
       <Table columns={columns} dataSource={dataSource} pagination={{ pageSize: 5 }} rowKey={record => record.id} />
     </div>
   )
 }
+export default withRouter(AuditList)
