@@ -85,7 +85,8 @@ function AuditList(props) {
   // ,发布
   const handlePublish = (item) => {
     axios.patch(`http://localhost:11111/news/${item.id}`, {
-      publishState: 2
+      publishState: 2,
+      publishTime: Date.now()
     }).then(res => {
       props.history.push('/publish-manage/published')
       notification.success({
@@ -97,7 +98,7 @@ function AuditList(props) {
   }
   return (
     <div>
-      <Table columns={columns} dataSource={dataSource} pagination={{ pageSize: 5 }} rowKey={record => record.id} />
+      <Table columns={columns} dataSource={dataSource} pagination={{ pageSize: 10 }} rowKey={record => record.id} />
     </div>
   )
 }

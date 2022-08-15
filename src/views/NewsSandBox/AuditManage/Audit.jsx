@@ -68,7 +68,7 @@ export default function Audit() {
       getData()
       notification.success({
         message: '通过成功',
-        description: '您可以到【审核管理/审核列表】中查看您的审核状态',
+        description: '您可以到【发布管理】中查看您的状态',
         placement: 'bottomRight'
       })
     })
@@ -86,7 +86,7 @@ export default function Audit() {
         columns={columns}
         rowKey={record => record.id}
         pagination={{
-          pageSize: 5,
+          pageSize: 10,
         }}></Table>
     </div>
   )

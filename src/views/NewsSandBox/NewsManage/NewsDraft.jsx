@@ -24,6 +24,7 @@ function NewsDraft(props) {
       title: '新闻标题',
       dataIndex: 'title',
       render: (title, item) => {
+        // console.log('ttt',title)
         return <NavLink to={`/news-manage/preview/${item.id}`}>{title}</NavLink>
       }
     },
@@ -34,7 +35,11 @@ function NewsDraft(props) {
     {
       title: '新闻分类',
       dataIndex: 'category',
-      render: (category) => category.title
+      render: (category) => {
+        //! 只有一个参数 且dataIndex对应的上 那么category就是该行整条数据
+        // console.log('cacaca', category)
+        return category.title
+      }
     },
     {
       title: '操作',
@@ -105,7 +110,7 @@ function NewsDraft(props) {
         columns={columns}
         rowKey={record => record.id}
         pagination={{
-          pageSize: 5,
+          pageSize: 10,
         }}></Table>
     </div>
   )
