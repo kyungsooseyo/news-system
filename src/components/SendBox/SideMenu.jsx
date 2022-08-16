@@ -3,20 +3,15 @@ import { Layout, Menu } from 'antd';
 import './sideMenu.scss'
 import { UserOutlined, VideoCameraOutlined, UploadOutlined, QqOutlined, TableOutlined } from '@ant-design/icons';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux'
 import axios from 'axios';
 const { Sider } = Layout;
 function SideMenu(props) {
   // console.log('pppp', props);
-  const [collapsed, setCollapsed] = useState(false);
   const [menu, setMenu] = useState([]);
   useEffect(() => {
     axios.get('http://localhost:11111/rights?_embed=children').then(res => {
       console.log('sideMenu', res.data)
-      // res.data = res.data.forEach(item => {
-      //   if (item.title === '首页') {
-      //     item.children = [{ id: 111, title: '首页1212', rightId: 2, key: '/home', grade: 2, pagepermisson: 1 }]
-      //   }
-      // })
       setMenu(res.data)
     })
     return () => {
@@ -107,7 +102,7 @@ function SideMenu(props) {
   const selectMenu = props.location.pathname
   const openKeys = props.location.pathname.split('/')[1]
   return (
-    <Sider trigger={null} collapsible collapsed={collapsed} className='side-menu-container'>
+    <Sider trigger={null} collapsible collapsed={props.isCollapsed} className='side-menu-container'>
 
       <div className="menu-wrapper">
         <div className="logo">new system</div>
@@ -126,5 +121,10 @@ function SideMenu(props) {
     </Sider>
   )
 }
+const mapStateToProps = (state) => {
+  return {
+    isCollapsed: state.collapsedReducer.isCollapsed,
+  }
+}
 //= 父级没给传 只能靠withRouter包一下
-export default withRouter(SideMenu)
+export default connect(mapStateToProps)(withRouter(SideMenu))

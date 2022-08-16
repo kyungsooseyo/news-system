@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Spin } from 'antd'
 import Home from '../../views/NewsSandBox/Home/Home';
 import UserList from '../../views/NewsSandBox/UserManage/UserList'
 import RoleList from '../../views/NewsSandBox/RightManage/RoleList'
@@ -16,7 +18,7 @@ import Sunset from '../../views/NewsSandBox/PublishManage/Sunset'
 import axios from 'axios';
 import NewsPreview from '../../views/NewsSandBox/NewsManage/NewsPreview';
 import NewsUpdate from '../../views/NewsSandBox/NewsManage/NewsUpdate';
-export default function NewsRouter() {
+function NewsRouter(props) {
   const [backRouterList, setBackRouterList] = useState([])
   useEffect(() => {
     Promise.all([
@@ -54,26 +56,34 @@ export default function NewsRouter() {
     return !!rights?.checked ? rights?.checked.includes(item.key) : rights?.includes(item.key)
   }
   return (
-    <Switch>
-      {/* <Route path={'/home'} component={Home}></Route>
+    <Spin spinning={props.isLoading}>
+      <Switch>
+        {/* <Route path={'/home'} component={Home}></Route>
       <Route path={'/user-manage/list'} component={UserList}></Route>
       <Route path={'/right-manage/role/list'} component={RoleList}></Route>
       <Route path={'/right-manage/right/list'} component={RightList}></Route> */}
-      {/* 本身路由是模糊匹配的，后端给的数据包含类似/user-manage 这样的一级路由，这样的一级路由本身是没有菜单的，所有要进行精确匹配 */}
-      {
-        backRouterList.map(item => {
-          if (checkRoute(item) && checkUserPermission(item)) {
-            return <Route key={item.key} path={item.key} component={localRouterMap[item.key]} exact></Route>
-          }
-          return null
-        })
-      }
-      {/* ~必须加exact */}
-      <Redirect to={'/home'} from='/' exact></Redirect>
-      {/* 为了避免初始化直接显示403，加上这样的会白屏一下，但不会显示403 */}
-      {
-        backRouterList.length > 0 && <Route path='*' component={NoPermission}></Route>
-      }
-    </Switch>
+        {/* 本身路由是模糊匹配的，后端给的数据包含类似/user-manage 这样的一级路由，这样的一级路由本身是没有菜单的，所有要进行精确匹配 */}
+        {
+          backRouterList.map(item => {
+            if (checkRoute(item) && checkUserPermission(item)) {
+              return <Route key={item.key} path={item.key} component={localRouterMap[item.key]} exact></Route>
+            }
+            return null
+          })
+        }
+        {/* ~必须加exact */}
+        <Redirect to={'/home'} from='/' exact></Redirect>
+        {/* 为了避免初始化直接显示403，加上这样的会白屏一下，但不会显示403 */}
+        {
+          backRouterList.length > 0 && <Route path='*' component={NoPermission}></Route>
+        }
+      </Switch>
+    </Spin>
   )
 }
+const mapStateToProps = (state) => {
+  return {
+    isLoading: state.loadingReducer.isLoading
+  }
+}
+export default connect(mapStateToProps)(NewsRouter)

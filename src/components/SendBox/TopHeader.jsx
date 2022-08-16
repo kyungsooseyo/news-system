@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Layout, Dropdown, Menu, Space, Avatar } from 'antd';
-import { MenuUnfoldOutlined, MenuFoldOutlined,  DownOutlined, UserOutlined } from '@ant-design/icons';
+import { MenuUnfoldOutlined, MenuFoldOutlined, DownOutlined, UserOutlined } from '@ant-design/icons';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux'
 function TopHeader(props) {
   const { Header } = Layout
-  const [collapsed, setCollapsed] = useState(false)
   const changeCollapsed = () => {
-    setCollapsed(!collapsed)
+    console.log(props);
+    props.changeCollapsed(!props.isCollapsed)
   }
   const { role: { roleName }, username } = JSON.parse(localStorage.getItem('token'))
   //, 退出登录
@@ -17,7 +18,7 @@ function TopHeader(props) {
   }
   const menu = (
     <Menu
-    // ! items中的key要不一样，否则hover的时候都会有背景色
+      // ! items中的key要不一样，否则hover的时候都会有背景色
       items={[
         {
           key: '1',
@@ -48,7 +49,7 @@ function TopHeader(props) {
         onClick: () => setCollapsed(!collapsed),
       })} */}
       {
-        collapsed ? <MenuUnfoldOutlined onClick={changeCollapsed} /> : <MenuFoldOutlined onClick={changeCollapsed} />
+        props.isCollapsed ? <MenuUnfoldOutlined onClick={changeCollapsed} /> : <MenuFoldOutlined onClick={changeCollapsed} />
       }
       <div>
         <span className='desc'>欢迎{username}回来</span>
@@ -62,4 +63,27 @@ function TopHeader(props) {
     </Header>
   )
 }
-export default withRouter(TopHeader)
+const mapStateToProps = (state) => {
+  return {
+    isCollapsed: state.collapsedReducer.isCollapsed,
+  }
+}
+// const mapDispatchToProps = {
+//   changeCollapsed() {
+//     return {
+//       type: 'CHANGE_COLLAPSED'
+//     }
+//   }
+// }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    changeCollapsed(status) {
+      // console.log('status',status);
+      dispatch({
+        type: 'CHANGE_COLLAPSED',
+        payload: status,
+      })
+    }
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TopHeader))

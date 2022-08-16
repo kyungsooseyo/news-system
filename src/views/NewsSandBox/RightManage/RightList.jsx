@@ -109,7 +109,7 @@ export default function RightList() {
         dataSource={dataSource}
         columns={columns}
         pagination={{
-          pageSize: 5,
+          pageSize: 10,
         }}></Table>
     </div>
   )
