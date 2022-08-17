@@ -7,7 +7,7 @@ export default function NewsPublish(props) {
       title: '新闻标题',
       dataIndex: 'title',
       render: (title, item) => {
-        console.log('ttt', title)
+        // console.log('ttt', title)
         //~ 虽然这个写在column里面;但是每个item是那一行代表的数据
         return <NavLink to={`/news-manage/preview/${item.id}`}>{title}</NavLink>
       }
