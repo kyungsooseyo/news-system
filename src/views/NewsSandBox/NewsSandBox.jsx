@@ -6,8 +6,8 @@ import 'nprogress/nprogress.css'
 import { Layout } from "antd";
 import './index.scss';
 import NewsRouter from '../../components/SendBox/NewsRouter';
+const { Content } = Layout;
 export default function NewsSandBox() {
-  const { Content } = Layout;
   NProgress.start();
   useEffect(() => {
     NProgress.done();
